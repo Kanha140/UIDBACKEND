@@ -77,17 +77,6 @@
       "api_key": "APIKEY-BR5V-IOHS-LTOJ-0ZFN",
       "created_at": "2026-07-24T12:38:51.909Z",
       "last_login_ip": "127.0.0.1"
-    },
-    {
-      "id": "usr_1784897269177",
-      "username": "VILLAN",
-      "password_hash": "$2a$10$1n87q4ErWKY89o7XblDc9.4VJnTOjsdjyuN5dUyvCJuVGln8j9jJi",
-      "role": "RESELLER",
-      "created_by": "KANHA",
-      "credits": 1000,
-      "api_key": null,
-      "created_at": "2026-07-24T12:47:49.177Z",
-      "last_login_ip": "Not logged in yet"
     }
   ],
   "whitelists": [
