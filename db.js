@@ -26,23 +26,41 @@ export function loadDB() {
 
   let fileData = null;
 
-  // Try reading main DB file
-  if (fs.existsSync(DB_FILE)) {
-    try {
-      const raw = fs.readFileSync(DB_FILE, 'utf8');
-      fileData = JSON.parse(raw);
-    } catch (e) {
-      console.error('[DB LOAD ERROR] Main file error:', e.message);
+  // Search candidate paths in order of priority
+  const searchPaths = [
+    DB_FILE,
+    BACKUP_FILE,
+    path.join(__dirname, 'database.json'),
+    path.join(__dirname, 'database_backup.json'),
+    '/tmp/uid_database.json'
+  ];
+
+  for (const filePath of searchPaths) {
+    if (fs.existsSync(filePath)) {
+      try {
+        const raw = fs.readFileSync(filePath, 'utf8');
+        const parsed = JSON.parse(raw);
+        if (parsed && Array.isArray(parsed.users) && parsed.users.length > 0) {
+          fileData = parsed;
+          console.log(`[DB LOAD] Database loaded successfully from: ${filePath}`);
+          break;
+        }
+      } catch (e) {
+        console.error(`[DB LOAD WARN] Error reading ${filePath}:`, e.message);
+      }
     }
   }
 
-  // Try backup file if main file failed
-  if (!fileData && fs.existsSync(BACKUP_FILE)) {
+  // Try environment variable fallback if set (e.g. PERSIST_DB_JSON on Render)
+  if (!fileData && process.env.PERSIST_DB_JSON) {
     try {
-      const rawBackup = fs.readFileSync(BACKUP_FILE, 'utf8');
-      fileData = JSON.parse(rawBackup);
+      const decoded = Buffer.from(process.env.PERSIST_DB_JSON, 'base64').toString('utf8');
+      fileData = JSON.parse(decoded);
+      console.log('[DB LOAD] Database loaded from PERSIST_DB_JSON environment variable.');
     } catch (e) {
-      console.error('[DB BACKUP LOAD ERROR] Backup file error:', e.message);
+      try {
+        fileData = JSON.parse(process.env.PERSIST_DB_JSON);
+      } catch (err) {}
     }
   }
 
@@ -70,18 +88,36 @@ export function loadDB() {
 
 export function saveDB(data) {
   memoryDB = data;
+  
+  // Sync in-memory PERMANENT_STORE
+  PERMANENT_STORE.users = data.users || [];
+  PERMANENT_STORE.whitelists = data.whitelists || [];
+  PERMANENT_STORE.login_history = data.login_history || [];
+
   try {
     const jsonStr = JSON.stringify(data, null, 2);
-    const tmpFile = DB_FILE + '.tmp';
-    const tmpBackup = BACKUP_FILE + '.tmp';
 
-    // Atomic write for main database file
-    fs.writeFileSync(tmpFile, jsonStr, 'utf8');
-    fs.renameSync(tmpFile, DB_FILE);
+    const targetPaths = [
+      DB_FILE,
+      BACKUP_FILE,
+      path.join(__dirname, 'database.json'),
+      path.join(__dirname, 'database_backup.json'),
+      '/tmp/uid_database.json'
+    ];
 
-    // Atomic write for backup database file
-    fs.writeFileSync(tmpBackup, jsonStr, 'utf8');
-    fs.renameSync(tmpBackup, BACKUP_FILE);
+    for (const filePath of targetPaths) {
+      try {
+        const dir = path.dirname(filePath);
+        if (!fs.existsSync(dir)) {
+          fs.mkdirSync(dir, { recursive: true });
+        }
+        const tmpFile = filePath + '.tmp';
+        fs.writeFileSync(tmpFile, jsonStr, 'utf8');
+        fs.renameSync(tmpFile, filePath);
+      } catch (e) {
+        // Ignore unwritable path errors
+      }
+    }
   } catch (err) {
     console.error('[DB SAVE WARNING] Could not write to disk, data kept in memory:', err.message);
   }
