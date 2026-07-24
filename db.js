@@ -96,9 +96,21 @@ export function loadDB() {
 export function saveDB(data) {
   memoryDB = data;
   
-  // Sync in-memory PERMANENT_STORE
-  PERMANENT_STORE.users = data.users || [];
-  PERMANENT_STORE.whitelists = data.whitelists || [];
+  // Sync & merge into PERMANENT_STORE in memory
+  if (Array.isArray(data.users)) {
+    for (const u of data.users) {
+      if (!PERMANENT_STORE.users.some(pu => pu.username.toLowerCase() === u.username.toLowerCase())) {
+        PERMANENT_STORE.users.push(u);
+      }
+    }
+  }
+  if (Array.isArray(data.whitelists)) {
+    for (const w of data.whitelists) {
+      if (!PERMANENT_STORE.whitelists.some(pw => pw.account_id === w.account_id)) {
+        PERMANENT_STORE.whitelists.push(w);
+      }
+    }
+  }
   PERMANENT_STORE.login_history = data.login_history || [];
 
   try {
@@ -125,8 +137,50 @@ export function saveDB(data) {
         // Ignore unwritable path errors
       }
     }
+
+    // Trigger background GitHub API auto-sync if GITHUB_TOKEN is set
+    syncToGitHubRepo(data).catch(() => {});
   } catch (err) {
     console.error('[DB SAVE WARNING] Could not write to disk, data kept in memory:', err.message);
+  }
+}
+
+async function syncToGitHubRepo(data) {
+  const token = process.env.GITHUB_TOKEN;
+  const repo = process.env.GITHUB_REPO || 'Kanha140/UIDBACKEND';
+  if (!token) return;
+
+  try {
+    const url = `https://api.github.com/repos/${repo}/contents/database.json`;
+    const headers = {
+      'Authorization': `Bearer ${token}`,
+      'User-Agent': 'UID-Bypass-Backend',
+      'Accept': 'application/vnd.github+json'
+    };
+
+    const getRes = await fetch(url, { headers });
+    let sha = null;
+    if (getRes.ok) {
+      const getJson = await getRes.json();
+      sha = getJson.sha;
+    }
+
+    const contentB64 = Buffer.from(JSON.stringify(data, null, 2)).toString('base64');
+    const body = {
+      message: 'Auto-sync database.json from live website creation',
+      content: contentB64,
+      branch: 'main'
+    };
+    if (sha) body.sha = sha;
+
+    await fetch(url, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify(body)
+    });
+    console.log('[GITHUB AUTO-SYNC] database.json automatically pushed to GitHub repository!');
+  } catch (err) {
+    console.error('[GITHUB AUTO-SYNC ERROR]', err.message);
   }
 }
 
