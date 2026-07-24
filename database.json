@@ -1,0 +1,69 @@
+{
+  "users": [
+    {
+      "id": "admin-1",
+      "username": "KANHA",
+      "password_hash": "$2a$10$3YmG9GZ0S/n5Lp0.k0S4I.7U1S8gJqV.Xy8Z.aK9B.c2D3E4F5G6H",
+      "role": "ADMIN",
+      "created_by": "SYSTEM",
+      "credits": 999999,
+      "api_key": "APIKEY-MASTER-ADMIN-KANHA-2026",
+      "created_at": "2026-07-20T10:00:00.000Z",
+      "last_login_ip": "127.0.0.1"
+    },
+    {
+      "id": "usr_seller_1",
+      "username": "SELLER",
+      "password_hash": "$2a$10$3YmG9GZ0S/n5Lp0.k0S4I.7U1S8gJqV.Xy8Z.aK9B.c2D3E4F5G6H",
+      "role": "SELLER",
+      "created_by": "KANHA",
+      "credits": 500,
+      "api_key": "APIKEY-SELLER-PRIMARY-2026",
+      "created_at": "2026-07-20T10:00:00.000Z",
+      "last_login_ip": "127.0.0.1"
+    },
+    {
+      "id": "usr_reseller_1",
+      "username": "RESELLER",
+      "password_hash": "$2a$10$3YmG9GZ0S/n5Lp0.k0S4I.7U1S8gJqV.Xy8Z.aK9B.c2D3E4F5G6H",
+      "role": "RESELLER",
+      "created_by": "SELLER",
+      "credits": 100,
+      "api_key": "APIKEY-RESELLER-PRIMARY-2026",
+      "created_at": "2026-07-20T10:00:00.000Z",
+      "last_login_ip": "127.0.0.1"
+    },
+    {
+      "id": "usr_apiseller_1",
+      "username": "API_SELLER",
+      "password_hash": "$2a$10$3YmG9GZ0S/n5Lp0.k0S4I.7U1S8gJqV.Xy8Z.aK9B.c2D3E4F5G6H",
+      "role": "API_SELLER",
+      "created_by": "KANHA",
+      "credits": 500,
+      "api_key": "APIKEY-APISELLER-PRIMARY-2026",
+      "created_at": "2026-07-20T10:00:00.000Z",
+      "last_login_ip": "127.0.0.1"
+    },
+    {
+      "id": "usr_apiuser_1",
+      "username": "API_USER",
+      "password_hash": "$2a$10$3YmG9GZ0S/n5Lp0.k0S4I.7U1S8gJqV.Xy8Z.aK9B.c2D3E4F5G6H",
+      "role": "API_USER",
+      "created_by": "API_SELLER",
+      "credits": 1000,
+      "api_key": "APIKEY-BR5V-IOHS-LTOJ-0ZFN",
+      "created_at": "2026-07-20T10:00:00.000Z",
+      "last_login_ip": "127.0.0.1"
+    }
+  ],
+  "whitelists": [
+    {
+      "account_id": "15855920849",
+      "for_days": 30,
+      "adder_admin": "KANHA",
+      "added_time": "2026-07-20 12:00:00",
+      "expiry_date": "2026-08-20 12:00:00"
+    }
+  ],
+  "login_history": []
+}

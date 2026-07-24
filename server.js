@@ -464,6 +464,19 @@ app.delete('/api/users/:userId', authenticateToken, (req, res) => {
   res.json({ success: true, message: `Account "${targetUser.username}" has been deleted successfully.` });
 });
 
+// Admin Database Backup & Persistence Export Endpoint
+app.get('/api/admin/export-db', authenticateToken, (req, res) => {
+  if (req.user.role !== 'ADMIN') {
+    return res.status(403).json({ success: false, message: 'Admin access required.' });
+  }
+  const db = loadDB();
+  res.json({
+    success: true,
+    database: db,
+    persist_env_b64: Buffer.from(JSON.stringify(db)).toString('base64')
+  });
+});
+
 // Login History Logging - record each login event
 app.post('/api/auth/login', async (req, res) => {
   // Note: This is handled above in the main login route, login_history is stored per-user
