@@ -14,28 +14,9 @@ const JWT_SECRET = process.env.JWT_SECRET || 'UID_BYPASS_SUPER_SECRET_KEY_2026';
 
 const GTC_API_URL = process.env.API_URL || 'https://gtccheats.xyz/Api/uidbypassapi/api_user.php';
 const GTC_API_KEY = process.env.API_KEY || 'GTCAPI-0E9C83D81E2942CACE91A4AF6C86313E';
-const DISCORD_WEBHOOK_URL = process.env.DISCORD_WEBHOOK_URL || 'https://discordapp.com/api/webhooks/1528755963035783218/9O-3-6EqqzolpuGZnDQRS4tDpRvlKvCXpcVFh8WM3eWu792Lnjh-T7Pwdgh8gBA14WQB';
-
-// Discord Rich Webhook Logger Helper
-async function sendDiscordWebhook(title, description, color = 0x7C3AED, fields = []) {
-  if (!DISCORD_WEBHOOK_URL) return;
-  try {
-    const embed = {
-      title: title,
-      description: description,
-      color: color,
-      fields: fields,
-      footer: { text: "UID Bypass Registry V4.0 — Audit System" },
-      timestamp: new Date().toISOString()
-    };
-    await fetch(DISCORD_WEBHOOK_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ embeds: [embed] })
-    });
-  } catch (err) {
-    console.error('[Discord Webhook Error]', err.message);
-  }
+// Webhook logging disabled
+async function sendDiscordWebhook() {
+  // Webhook logging disabled
 }
 
 // Allowed Origins — ONLY your official Netlify domain & localhost
