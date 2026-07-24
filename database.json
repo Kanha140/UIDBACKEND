@@ -55,6 +55,17 @@
       "api_key": "APIKEY-GCL5-5AUU-FI9J-MHFG",
       "created_at": "2026-07-24T12:33:06.255Z",
       "last_login_ip": "Not logged in yet"
+    },
+    {
+      "id": "usr_seller_1",
+      "username": "SELLER",
+      "password_hash": "$2a$10$5qKxU0otk4LwJWSf0CHMCeT.uAqIuMsKJYhzcNturG5q2pKbrMlYu",
+      "role": "SELLER",
+      "created_by": "KANHA",
+      "credits": 500,
+      "api_key": "APIKEY-QEW2-4IKE-MJ26-KL80",
+      "created_at": "2026-07-24T12:37:46.995Z",
+      "last_login_ip": "127.0.0.1"
     }
   ],
   "whitelists": [
