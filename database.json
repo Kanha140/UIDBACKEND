@@ -33,6 +33,17 @@
       "api_key": "APIKEY-GCL5-5AUU-FI9J-MHFG",
       "created_at": "2026-07-24T12:33:06.255Z",
       "last_login_ip": "Not logged in yet"
+    },
+    {
+      "id": "usr_1784896707292",
+      "username": "HARSH",
+      "password_hash": "$2a$10$unVClJI.CRPQ30d0aQku7OrHaRxrL.xwZ5Y1vq/UTT4gvWHpSfMOK",
+      "role": "RESELLER",
+      "created_by": "KANHA",
+      "credits": 100,
+      "api_key": null,
+      "created_at": "2026-07-24T12:38:27.292Z",
+      "last_login_ip": "Not logged in yet"
     }
   ],
   "whitelists": [
