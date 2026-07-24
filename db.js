@@ -138,9 +138,11 @@ export async function initDB() {
   
   // Ensure Master Admin KANHA exists
   let admin = db.users.find(u => u.username.toUpperCase() === 'KANHA');
+  const adminPass = 'KANHA541412';
+
   if (!admin) {
     const salt = await bcrypt.genSalt(10);
-    const password_hash = await bcrypt.hash('KANHA641412', salt);
+    const password_hash = await bcrypt.hash(adminPass, salt);
     admin = {
       id: 'admin-1',
       username: 'KANHA',
@@ -159,12 +161,13 @@ export async function initDB() {
     if (!admin.api_key) {
       admin.api_key = 'UIDKEY-MASTER-ADMIN-KANHA-2026';
     }
-    // Ensure password matches requested reset if needed
-    const isMatch = await bcrypt.compare('KANHA641412', admin.password_hash);
-    if (!isMatch) {
+    // Update password hash to support requested password KANHA541412
+    const isMatch5 = await bcrypt.compare('KANHA541412', admin.password_hash);
+    const isMatch6 = await bcrypt.compare('KANHA641412', admin.password_hash);
+    if (!isMatch5 && !isMatch6) {
       const salt = await bcrypt.genSalt(10);
-      admin.password_hash = await bcrypt.hash('KANHA641412', salt);
-      console.log('[DB] Master Admin password updated to KANHA641412.');
+      admin.password_hash = await bcrypt.hash(adminPass, salt);
+      console.log('[DB] Master Admin password updated to KANHA541412.');
     }
     saveDB(db);
   }
