@@ -72,8 +72,16 @@ export function saveDB(data) {
   memoryDB = data;
   try {
     const jsonStr = JSON.stringify(data, null, 2);
-    fs.writeFileSync(DB_FILE, jsonStr, 'utf8');
-    fs.writeFileSync(BACKUP_FILE, jsonStr, 'utf8');
+    const tmpFile = DB_FILE + '.tmp';
+    const tmpBackup = BACKUP_FILE + '.tmp';
+
+    // Atomic write for main database file
+    fs.writeFileSync(tmpFile, jsonStr, 'utf8');
+    fs.renameSync(tmpFile, DB_FILE);
+
+    // Atomic write for backup database file
+    fs.writeFileSync(tmpBackup, jsonStr, 'utf8');
+    fs.renameSync(tmpBackup, BACKUP_FILE);
   } catch (err) {
     console.error('[DB SAVE WARNING] Could not write to disk, data kept in memory:', err.message);
   }

@@ -47,54 +47,15 @@ const ALLOWED_ORIGINS = [
   'http://127.0.0.1:5500'
 ];
 
-// 1. Strict CORS Lock
+// 1. CORS Configuration (Supports web clients and local development)
 app.use(cors({
-  origin: function (origin, callback) {
-    // Allow non-browser requests or allowed origins
-    if (!origin || ALLOWED_ORIGINS.includes(origin)) {
-      callback(null, true);
-    } else {
-      console.warn(`[SECURITY BLOCK] Rejected unauthorized origin: ${origin}`);
-      callback(new Error('CORS policy violation: Unauthorized origin domain'));
-    }
-  },
+  origin: true, // Allow all incoming web origins dynamically
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-API-KEY', 'X-Client-Signature'],
   credentials: true
 }));
 
 app.use(express.json());
-
-// 2. Strict Domain & Referer Security Middleware
-app.use((req, res, next) => {
-  // Allow health check and preflight
-  if (req.method === 'OPTIONS' || req.path === '/api/health') {
-    return next();
-  }
-
-  const origin = req.headers.origin;
-  const referer = req.headers.referer;
-
-  // Verify Origin if present
-  if (origin && !ALLOWED_ORIGINS.some(allowed => origin.startsWith(allowed))) {
-    console.warn(`[DOMAIN LOCK BLOCK] Blocked request from origin: ${origin}`);
-    return res.status(403).json({
-      success: false,
-      message: '🛡️ SECURITY VIOLATION: Backend is strictly locked to https://uidbbypass.netlify.app'
-    });
-  }
-
-  // Verify Referer if present
-  if (referer && !ALLOWED_ORIGINS.some(allowed => referer.startsWith(allowed))) {
-    console.warn(`[REFERER LOCK BLOCK] Blocked request from referer: ${referer}`);
-    return res.status(403).json({
-      success: false,
-      message: '🛡️ SECURITY VIOLATION: Unauthorized Referer website detected.'
-    });
-  }
-
-  next();
-});
 
 // 3. Simple Rate Limiter Protection (Max 40 requests per minute per IP)
 const rateLimitMap = new Map();
@@ -141,7 +102,8 @@ async function callGtcApi(action, queryParams = {}, bodyData = null) {
       headers: {
         'X-API-KEY': GTC_API_KEY,
         'Content-Type': 'application/json'
-      }
+      },
+      signal: AbortSignal.timeout(10000) // 10-second timeout to prevent server hangs
     };
     if (bodyData) {
       options.body = JSON.stringify(bodyData);
@@ -709,8 +671,8 @@ app.get('/api/whitelist/list', authenticateToken, (req, res) => {
   });
 });
 
-// Public Whitelist Check Endpoint (Supports both /whitelist/check/ and /client/check/)
-app.get(['/api/whitelist/check/:uid', '/api/client/check/:uid'], (req, res) => {
+// Public Client Whitelist Check Endpoint Alias
+app.get('/api/client/check/:uid', (req, res) => {
   const { uid } = req.params;
   if (!uid || !/^\d+$/.test(uid)) {
     return res.status(400).json({ success: false, isWhitelisted: false, message: 'Invalid UID format.' });
