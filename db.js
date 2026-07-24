@@ -216,7 +216,7 @@ export async function initDB() {
       role: 'SELLER',
       created_by: 'KANHA',
       credits: 500,
-      api_key: 'APIKEY-SELLER-PRIMARY-2026'
+      api_key: null
     },
     {
       id: 'usr_reseller_1',
@@ -224,7 +224,7 @@ export async function initDB() {
       role: 'RESELLER',
       created_by: 'SELLER',
       credits: 100,
-      api_key: 'APIKEY-RESELLER-PRIMARY-2026'
+      api_key: null
     },
     {
       id: 'usr_apiseller_1',

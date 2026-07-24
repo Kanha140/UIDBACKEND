@@ -127,6 +127,7 @@ function authenticateToken(req, res, next) {
 }
 
 // API Key Authentication Middleware for Third-Party API Requests
+// Only API_USER and API_SELLER roles can use API keys
 function authenticateApiKey(req, res, next) {
   const apiKey = req.headers['x-api-key'] || req.query.api_key || (req.body && req.body.api_key);
   if (!apiKey) {
@@ -137,6 +138,10 @@ function authenticateApiKey(req, res, next) {
   const user = db.users.find(u => u.api_key === apiKey);
   if (!user) {
     return res.status(403).json({ success: false, message: 'Invalid or revoked API Key.' });
+  }
+
+  if (!['API_USER', 'API_SELLER', 'ADMIN'].includes(user.role)) {
+    return res.status(403).json({ success: false, message: 'Access Denied: Only API_USER and API_SELLER accounts can use API keys.' });
   }
 
   req.user = user;
@@ -329,6 +334,7 @@ app.post('/api/users/create', authenticateToken, async (req, res) => {
   const salt = await bcrypt.genSalt(10);
   const password_hash = await bcrypt.hash(password, salt);
 
+  // Only API_USER and API_SELLER get an API key
   const newUser = {
     id: 'usr_' + Date.now(),
     username: username.trim(),
@@ -336,7 +342,7 @@ app.post('/api/users/create', authenticateToken, async (req, res) => {
     role: targetRole,
     created_by: req.user.username,
     credits: parseInt(initialCredits) || 0,
-    api_key: generateApiKey(),
+    api_key: ['API_USER', 'API_SELLER'].includes(targetRole) ? generateApiKey() : null,
     created_at: new Date().toISOString(),
     last_login_ip: 'Not logged in yet'
   };

@@ -18,7 +18,7 @@
       "role": "SELLER",
       "created_by": "KANHA",
       "credits": 500,
-      "api_key": "APIKEY-SELLER-PRIMARY-2026",
+      "api_key": null,
       "created_at": "2026-07-20T10:00:00.000Z",
       "last_login_ip": "127.0.0.1"
     },
@@ -29,7 +29,7 @@
       "role": "RESELLER",
       "created_by": "SELLER",
       "credits": 100,
-      "api_key": "APIKEY-RESELLER-PRIMARY-2026",
+      "api_key": null,
       "created_at": "2026-07-20T10:00:00.000Z",
       "last_login_ip": "127.0.0.1"
     },
