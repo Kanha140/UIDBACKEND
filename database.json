@@ -24,28 +24,6 @@
       "last_login_ip": "127.0.0.1"
     },
     {
-      "id": "usr_apiseller_1",
-      "username": "API_SELLER",
-      "password_hash": "$2a$10$DIeuvs5y1Phqvou./WMpR.8eyNi4EFXItB9Rsxj/sg7xnyaa1Pe3y",
-      "role": "API_SELLER",
-      "created_by": "KANHA",
-      "credits": 500,
-      "api_key": "APIKEY-APISELLER-PRIMARY-2026",
-      "created_at": "2026-07-20T10:00:00.000Z",
-      "last_login_ip": "127.0.0.1"
-    },
-    {
-      "id": "usr_apiuser_1",
-      "username": "API_USER",
-      "password_hash": "$2a$10$DIeuvs5y1Phqvou./WMpR.8eyNi4EFXItB9Rsxj/sg7xnyaa1Pe3y",
-      "role": "API_USER",
-      "created_by": "API_SELLER",
-      "credits": 1000,
-      "api_key": "APIKEY-BR5V-IOHS-LTOJ-0ZFN",
-      "created_at": "2026-07-20T10:00:00.000Z",
-      "last_login_ip": "127.0.0.1"
-    },
-    {
       "id": "usr_1784896386255",
       "username": "GARENAMC",
       "password_hash": "$2a$10$uS7VaCiSSUxjfCK1FQC4CurRTJiPpwymdX5JrGVEDFSDmzudMXKru",
@@ -57,25 +35,14 @@
       "last_login_ip": "Not logged in yet"
     },
     {
-      "id": "usr_seller_1",
-      "username": "SELLER",
-      "password_hash": "$2a$10$5qKxU0otk4LwJWSf0CHMCeT.uAqIuMsKJYhzcNturG5q2pKbrMlYu",
-      "role": "SELLER",
-      "created_by": "KANHA",
-      "credits": 500,
-      "api_key": "APIKEY-QEW2-4IKE-MJ26-KL80",
-      "created_at": "2026-07-24T12:37:46.995Z",
-      "last_login_ip": "127.0.0.1"
-    },
-    {
-      "id": "usr_1784896715646",
+      "id": "usr_1784896707292",
       "username": "HARSH",
-      "password_hash": "$2a$10$VwqmxgGtySh99fqlLu.oEORN987ROL8LRMuqn8sPjCFBznCxEgNFK",
+      "password_hash": "$2a$10$unVClJI.CRPQ30d0aQku7OrHaRxrL.xwZ5Y1vq/UTT4gvWHpSfMOK",
       "role": "RESELLER",
       "created_by": "KANHA",
       "credits": 100,
       "api_key": null,
-      "created_at": "2026-07-24T12:38:35.646Z",
+      "created_at": "2026-07-24T12:38:27.292Z",
       "last_login_ip": "Not logged in yet"
     }
   ],
