@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: uid-bypass-backend
+    env: node
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: JWT_SECRET
+        generateValue: true
+      - key: DATA_DIR
+        value: /var/data
+    disk:
+      name: uid_db_volume
+      mountPath: /var/data
+      sizeGB: 1
