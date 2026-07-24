@@ -867,113 +867,118 @@ app.post('/api/api-user/reset-data', authenticateToken, (req, res) => {
 // ----------------------------------------------------
 
 // 1. Add / Push Whitelist via API Key (Syncs locally AND pushes to GTC API)
-app.post(['/api/v1/whitelist/add', '/api/external/whitelist/add'], authenticateApiKey, async (req, res) => {
-  const uid = req.body.account_id || req.body.uid || req.query.account_id || req.query.uid;
+// Combined Multi-Action Endpoint (GTC API Compatible + REST Path Support)
+app.all(['/api/v1/whitelist', '/api/v1/whitelist/:subpath'], authenticateApiKey, async (req, res) => {
+  const action = (req.query.action || req.body.action || req.params.subpath || '').toLowerCase();
+  const uid = req.body.account_id || req.body.uid || req.query.account_id || req.query.uid || req.params.subpath;
   const days = req.body.for_days || req.body.days || req.query.for_days || req.query.days || 30;
 
-  if (!uid || !/^\d+$/.test(String(uid).trim())) {
-    return res.status(400).json({ success: false, message: 'Numeric account_id / uid parameter is required.' });
-  }
-
-  const cleanUid = String(uid).trim();
-  const durationDays = parseInt(days) || 30;
   const db = loadDB();
   const user = req.user;
 
-  if (user.role !== 'ADMIN') {
-    if (user.credits < 1) {
-      return res.status(400).json({ success: false, message: 'Insufficient UID Credits.' });
+  // ACTION 1: ADD / PUSH WHITELIST
+  if (action === 'add' || req.params.subpath === 'add') {
+    if (!uid || !/^\d+$/.test(String(uid).trim())) {
+      return res.status(400).json({ success: false, message: 'Numeric account_id / uid parameter is required.' });
     }
-    user.credits -= 1;
+
+    const cleanUid = String(uid).trim();
+    const durationDays = parseInt(days) || 30;
+
+    if (user.role !== 'ADMIN') {
+      if (user.credits < 1) {
+        return res.status(400).json({ success: false, message: 'Insufficient UID Credits.' });
+      }
+      user.credits -= 1;
+    }
+
+    // Push to GTC API
+    const { data: gtcData, error: gtcErr } = await callGtcApi('add', {}, { account_id: cleanUid, for_days: durationDays });
+
+    const nowStr = new Date().toISOString().replace('T', ' ').substring(0, 19);
+    const expiryStr = (gtcData && gtcData.data && gtcData.data.expiry_date) || getExpiryDate(durationDays);
+
+    const whitelistRecord = {
+      account_id: cleanUid,
+      for_days: durationDays,
+      adder_admin: user.username,
+      added_time: nowStr,
+      expiry_date: expiryStr
+    };
+
+    let existingIndex = db.whitelists.findIndex(item => item.account_id === cleanUid);
+    if (existingIndex >= 0) {
+      db.whitelists[existingIndex] = whitelistRecord;
+    } else {
+      db.whitelists.push(whitelistRecord);
+    }
+
+    saveDB(db);
+
+    return res.json({
+      success: true,
+      message: `UID ${cleanUid} whitelisted successfully for ${durationDays} days!`,
+      data: whitelistRecord,
+      remaining_credits: user.credits,
+      gtc_synced: !gtcErr
+    });
   }
 
-  // Push to GTC API
-  const { data: gtcData, error: gtcErr } = await callGtcApi('add', {}, { account_id: cleanUid, for_days: durationDays });
+  // ACTION 2: REMOVE WHITELIST
+  if (action === 'remove' || req.params.subpath === 'remove') {
+    if (!uid) {
+      return res.status(400).json({ success: false, message: 'account_id or uid required.' });
+    }
 
-  const nowStr = new Date().toISOString().replace('T', ' ').substring(0, 19);
-  const expiryStr = (gtcData && gtcData.data && gtcData.data.expiry_date) || getExpiryDate(durationDays);
+    const cleanUid = String(uid).trim();
+    const existing = db.whitelists.find(w => w.account_id === cleanUid);
+    if (!existing) {
+      return res.status(404).json({ success: false, message: 'UID not found in database.' });
+    }
 
-  const whitelistRecord = {
-    account_id: cleanUid,
-    for_days: durationDays,
-    adder_admin: user.username,
-    added_time: nowStr,
-    expiry_date: expiryStr
-  };
+    if (user.role !== 'ADMIN' && existing.adder_admin !== user.username) {
+      return res.status(403).json({ success: false, message: 'Access Denied: You can only remove UIDs created by your API Key.' });
+    }
 
-  let existingIndex = db.whitelists.findIndex(item => item.account_id === cleanUid);
-  if (existingIndex >= 0) {
-    db.whitelists[existingIndex] = whitelistRecord;
-  } else {
-    db.whitelists.push(whitelistRecord);
+    await callGtcApi('remove', {}, { account_id: cleanUid });
+
+    db.whitelists = db.whitelists.filter(w => w.account_id !== cleanUid);
+    saveDB(db);
+
+    return res.json({
+      success: true,
+      message: `UID ${cleanUid} removed from Whitelist successfully!`
+    });
   }
 
-  saveDB(db);
+  // ACTION 3: INFO / CHECK WHITELIST STATUS
+  if (action === 'info' || action === 'check' || req.params.subpath === 'check' || uid) {
+    const cleanUid = String(uid).trim();
+    const record = (db.whitelists || []).find(w => w.account_id === cleanUid);
 
-  return res.json({
-    success: true,
-    message: `UID ${cleanUid} whitelisted successfully for ${durationDays} days via API!`,
-    data: whitelistRecord,
-    remaining_credits: user.credits,
-    gtc_synced: !gtcErr
-  });
-});
+    if (!record) {
+      return res.json({ success: false, isWhitelisted: false, message: 'UID not whitelisted.' });
+    }
 
-// 2. Remove Whitelist via API Key (Removes locally AND from GTC API)
-app.post(['/api/v1/whitelist/remove', '/api/external/whitelist/remove'], authenticateApiKey, async (req, res) => {
-  const uid = req.body.account_id || req.body.uid || req.query.account_id || req.query.uid;
+    const now = new Date();
+    const expiry = new Date(record.expiry_date.replace(' ', 'T'));
+    const isExpired = isNaN(expiry.getTime()) ? false : expiry < now;
 
-  if (!uid) {
-    return res.status(400).json({ success: false, message: 'account_id or uid required.' });
+    return res.json({
+      success: true,
+      isWhitelisted: !isExpired,
+      data: {
+        account_id: record.account_id,
+        for_days: record.for_days,
+        adder_admin: record.adder_admin,
+        added_time: record.added_time,
+        expiry_date: record.expiry_date,
+        status: isExpired ? 'EXPIRED' : 'ACTIVE'
+      }
+    });
   }
 
-  const cleanUid = String(uid).trim();
-  const db = loadDB();
-  const user = req.user;
-
-  const existing = db.whitelists.find(w => w.account_id === cleanUid);
-  if (!existing) {
-    return res.status(404).json({ success: false, message: 'UID not found in database.' });
-  }
-
-  if (user.role !== 'ADMIN' && existing.adder_admin !== user.username) {
-    return res.status(403).json({ success: false, message: 'Access Denied: You can only remove UIDs created by your API Key.' });
-  }
-
-  await callGtcApi('remove', {}, { account_id: cleanUid });
-
-  db.whitelists = db.whitelists.filter(w => w.account_id !== cleanUid);
-  saveDB(db);
-
-  return res.json({
-    success: true,
-    message: `UID ${cleanUid} removed from Whitelist successfully!`
-  });
-});
-
-// 3. Check Whitelist Status via API Key
-app.get(['/api/v1/whitelist/check/:uid', '/api/external/whitelist/check/:uid'], authenticateApiKey, (req, res) => {
-  const { uid } = req.params;
-  const db = loadDB();
-  const record = (db.whitelists || []).find(w => w.account_id === uid);
-
-  if (!record) {
-    return res.json({ success: false, isWhitelisted: false, message: 'UID not whitelisted.' });
-  }
-
-  const now = new Date();
-  const expiry = new Date(record.expiry_date.replace(' ', 'T'));
-  const isExpired = isNaN(expiry.getTime()) ? false : expiry < now;
-
-  return res.json({
-    success: true,
-    isWhitelisted: !isExpired,
-    account_id: record.account_id,
-    for_days: record.for_days,
-    expiry_date: record.expiry_date,
-    adder_admin: record.adder_admin,
-    status: isExpired ? 'EXPIRED' : 'ACTIVE'
-  });
+  return res.status(400).json({ success: false, message: 'Invalid action specified. Supported actions: add, remove, info, check.' });
 });
 
 // Global Anti-Crash Protection Handlers
