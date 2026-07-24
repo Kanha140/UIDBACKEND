@@ -23,6 +23,17 @@
       "created_at": "2026-07-24T12:33:06.255Z",
       "last_login_ip": "223.185.60.248, 172.71.198.150, 10.26.62.130",
       "last_login_time": "2026-07-24T12:36:37.409Z"
+    },
+    {
+      "id": "usr_1784896660891",
+      "username": "HARSH",
+      "password_hash": "$2a$10$ZisbAtnxJlLE0qYX4xXq3Ox.Jei9OSGdLixTpCVky/SByx.WXOjse",
+      "role": "RESELLER",
+      "created_by": "KANHA",
+      "credits": 100,
+      "api_key": null,
+      "created_at": "2026-07-24T12:37:40.891Z",
+      "last_login_ip": "Not logged in yet"
     }
   ],
   "whitelists": [
