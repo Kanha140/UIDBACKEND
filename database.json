@@ -24,17 +24,6 @@
       "last_login_ip": "127.0.0.1"
     },
     {
-      "id": "usr_apiuser_1",
-      "username": "API_USER",
-      "password_hash": "$2a$10$DIeuvs5y1Phqvou./WMpR.8eyNi4EFXItB9Rsxj/sg7xnyaa1Pe3y",
-      "role": "API_USER",
-      "created_by": "API_SELLER",
-      "credits": 1000,
-      "api_key": "APIKEY-BR5V-IOHS-LTOJ-0ZFN",
-      "created_at": "2026-07-20T10:00:00.000Z",
-      "last_login_ip": "127.0.0.1"
-    },
-    {
       "id": "usr_1784896386255",
       "username": "GARENAMC",
       "password_hash": "$2a$10$uS7VaCiSSUxjfCK1FQC4CurRTJiPpwymdX5JrGVEDFSDmzudMXKru",
