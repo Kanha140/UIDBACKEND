@@ -81,6 +81,13 @@ export function loadDB() {
     }
   }
 
+  // Merge permanent whitelists from storage.js if missing
+  for (const pWhite of PERMANENT_STORE.whitelists) {
+    if (!fileData.whitelists.some(w => w.account_id === pWhite.account_id)) {
+      fileData.whitelists.push(pWhite);
+    }
+  }
+
   memoryDB = fileData;
   saveDB(memoryDB);
   return memoryDB;
@@ -125,7 +132,7 @@ export function saveDB(data) {
 
 export function generateApiKey() {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  let key = 'UIDKEY-';
+  let key = 'APIKEY-';
   for (let i = 0; i < 16; i++) {
     if (i > 0 && i % 4 === 0) key += '-';
     key += chars.charAt(Math.floor(Math.random() * chars.length));
@@ -150,7 +157,7 @@ export async function initDB() {
       role: 'ADMIN',
       created_by: 'SYSTEM',
       credits: 999999,
-      api_key: 'UIDKEY-MASTER-ADMIN-KANHA-2026',
+      api_key: 'APIKEY-MASTER-ADMIN-KANHA-2026',
       created_at: new Date().toISOString()
     };
     db.users.push(admin);
@@ -158,8 +165,8 @@ export async function initDB() {
     console.log('[DB] Master Admin account KANHA initialized.');
   } else {
     // Ensure admin has API key
-    if (!admin.api_key) {
-      admin.api_key = 'UIDKEY-MASTER-ADMIN-KANHA-2026';
+    if (!admin.api_key || admin.api_key.startsWith('UIDKEY-')) {
+      admin.api_key = 'APIKEY-MASTER-ADMIN-KANHA-2026';
     }
     // Update password hash to support requested password KANHA541412
     const isMatch5 = await bcrypt.compare('KANHA541412', admin.password_hash);
@@ -172,11 +179,14 @@ export async function initDB() {
     saveDB(db);
   }
 
-  // Ensure all existing users have an api_key
+  // Ensure all existing users have an api_key with APIKEY- prefix
   let updated = false;
   for (const user of db.users) {
     if (!user.api_key) {
       user.api_key = generateApiKey();
+      updated = true;
+    } else if (user.api_key.startsWith('UIDKEY-')) {
+      user.api_key = user.api_key.replace(/^UIDKEY-/, 'APIKEY-');
       updated = true;
     }
   }

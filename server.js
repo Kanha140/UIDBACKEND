@@ -324,15 +324,19 @@ app.post('/api/users/create', authenticateToken, async (req, res) => {
   const targetRole = role.toUpperCase();
 
   if (currentUserRole === 'ADMIN') {
-    if (!['SELLER', 'RESELLER', 'API_USER'].includes(targetRole)) {
-      return res.status(400).json({ success: false, message: 'Admin can create SELLER, RESELLER, or API_USER.' });
+    if (!['SELLER', 'RESELLER', 'API_SELLER', 'API_USER'].includes(targetRole)) {
+      return res.status(400).json({ success: false, message: 'Admin can create SELLER, RESELLER, API_SELLER, or API_USER.' });
     }
   } else if (currentUserRole === 'SELLER') {
-    if (targetRole !== 'RESELLER') {
-      return res.status(403).json({ success: false, message: 'Sellers can ONLY create RESELLERS.' });
+    if (!['RESELLER', 'API_SELLER', 'API_USER'].includes(targetRole)) {
+      return res.status(403).json({ success: false, message: 'Sellers can create RESELLER, API_SELLER, or API_USER accounts.' });
+    }
+  } else if (currentUserRole === 'API_SELLER') {
+    if (targetRole !== 'API_USER') {
+      return res.status(403).json({ success: false, message: 'API Sellers can ONLY create API_USER accounts.' });
     }
   } else {
-    return res.status(403).json({ success: false, message: 'Resellers do not have permission to create users.' });
+    return res.status(403).json({ success: false, message: 'Resellers and API Users do not have permission to create users.' });
   }
 
   const db = loadDB();
@@ -402,7 +406,19 @@ app.get('/api/users', authenticateToken, (req, res) => {
     }));
   } else if (req.user.role === 'SELLER') {
     filterUsers = db.users
-      .filter(u => u.created_by === req.user.username || u.role === 'RESELLER')
+      .filter(u => u.created_by === req.user.username || u.role === 'RESELLER' || u.role === 'API_USER' || u.role === 'API_SELLER')
+      .map(u => ({
+        id: u.id,
+        username: u.username,
+        role: u.role,
+        credits: u.credits,
+        created_by: u.created_by,
+        created_at: u.created_at,
+        last_login_ip: u.last_login_ip || 'Not logged in yet'
+      }));
+  } else if (req.user.role === 'API_SELLER') {
+    filterUsers = db.users
+      .filter(u => u.created_by === req.user.username || u.role === 'API_USER')
       .map(u => ({
         id: u.id,
         username: u.username,
@@ -419,7 +435,7 @@ app.get('/api/users', authenticateToken, (req, res) => {
   res.json({ success: true, users: filterUsers });
 });
 
-// Delete User (Admin can delete Seller/Reseller, Seller can delete their own Resellers)
+// Delete User (Admin can delete Seller/Reseller/API_SELLER, Seller/API_SELLER can delete their own users)
 app.delete('/api/users/:userId', authenticateToken, (req, res) => {
   const { userId } = req.params;
   const db = loadDB();
@@ -439,9 +455,9 @@ app.delete('/api/users/:userId', authenticateToken, (req, res) => {
     return res.status(403).json({ success: false, message: 'Admin accounts cannot be deleted.' });
   }
 
-  // Seller can only delete Resellers they created
-  if (req.user.role === 'SELLER' && targetUser.created_by !== req.user.username) {
-    return res.status(403).json({ success: false, message: 'You can only delete Resellers created by your account.' });
+  // Seller / API Seller can only delete accounts created by them
+  if ((req.user.role === 'SELLER' || req.user.role === 'API_SELLER') && targetUser.created_by !== req.user.username) {
+    return res.status(403).json({ success: false, message: 'You can only delete accounts created by your account.' });
   }
 
   // Resellers cannot delete anyone
