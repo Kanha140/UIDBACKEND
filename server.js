@@ -324,8 +324,8 @@ app.post('/api/users/create', authenticateToken, async (req, res) => {
   const targetRole = role.toUpperCase();
 
   if (currentUserRole === 'ADMIN') {
-    if (!['SELLER', 'RESELLER'].includes(targetRole)) {
-      return res.status(400).json({ success: false, message: 'Admin can only create SELLER or RESELLER.' });
+    if (!['SELLER', 'RESELLER', 'API_USER'].includes(targetRole)) {
+      return res.status(400).json({ success: false, message: 'Admin can create SELLER, RESELLER, or API_USER.' });
     }
   } else if (currentUserRole === 'SELLER') {
     if (targetRole !== 'RESELLER') {
@@ -351,6 +351,7 @@ app.post('/api/users/create', authenticateToken, async (req, res) => {
     role: targetRole,
     created_by: req.user.username,
     credits: parseInt(initialCredits) || 0,
+    api_key: generateApiKey(),
     created_at: new Date().toISOString(),
     last_login_ip: 'Not logged in yet'
   };
