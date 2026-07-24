@@ -754,7 +754,15 @@ app.post('/api/api-user/login', async (req, res) => {
       return res.status(401).json({ success: false, message: 'Invalid credentials' });
     }
   } else {
-    return res.status(400).json({ success: false, message: 'Username & Password OR API Key is required' });
+    return res.status(400).json({ success: false, message: 'Username & Password is required' });
+  }
+
+  // Strictly enforce API_USER or ADMIN role for API Portal login
+  if (!['API_USER', 'ADMIN'].includes(user.role)) {
+    return res.status(403).json({
+      success: false,
+      message: 'Access Denied: Only API_USER accounts can access this portal. Staff/Reseller accounts must login at the Staff Portal.'
+    });
   }
 
   // Ensure user has API Key
