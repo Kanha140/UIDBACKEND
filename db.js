@@ -123,6 +123,16 @@ export function saveDB(data) {
   }
 }
 
+export function generateApiKey() {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let key = 'UIDKEY-';
+  for (let i = 0; i < 16; i++) {
+    if (i > 0 && i % 4 === 0) key += '-';
+    key += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return key;
+}
+
 export async function initDB() {
   const db = loadDB();
   
@@ -138,19 +148,36 @@ export async function initDB() {
       role: 'ADMIN',
       created_by: 'SYSTEM',
       credits: 999999,
+      api_key: 'UIDKEY-MASTER-ADMIN-KANHA-2026',
       created_at: new Date().toISOString()
     };
     db.users.push(admin);
     saveDB(db);
     console.log('[DB] Master Admin account KANHA initialized.');
   } else {
+    // Ensure admin has API key
+    if (!admin.api_key) {
+      admin.api_key = 'UIDKEY-MASTER-ADMIN-KANHA-2026';
+    }
     // Ensure password matches requested reset if needed
     const isMatch = await bcrypt.compare('KANHA641412', admin.password_hash);
     if (!isMatch) {
       const salt = await bcrypt.genSalt(10);
       admin.password_hash = await bcrypt.hash('KANHA641412', salt);
-      saveDB(db);
       console.log('[DB] Master Admin password updated to KANHA641412.');
     }
+    saveDB(db);
+  }
+
+  // Ensure all existing users have an api_key
+  let updated = false;
+  for (const user of db.users) {
+    if (!user.api_key) {
+      user.api_key = generateApiKey();
+      updated = true;
+    }
+  }
+  if (updated) {
+    saveDB(db);
   }
 }

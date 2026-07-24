@@ -3,7 +3,7 @@ import cors from 'cors';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import { loadDB, saveDB, initDB } from './db.js';
+import { loadDB, saveDB, initDB, generateApiKey } from './db.js';
 
 dotenv.config();
 
@@ -143,6 +143,23 @@ function authenticateToken(req, res, next) {
     req.user = user;
     next();
   });
+}
+
+// API Key Authentication Middleware for Third-Party API Requests
+function authenticateApiKey(req, res, next) {
+  const apiKey = req.headers['x-api-key'] || req.query.api_key || (req.body && req.body.api_key);
+  if (!apiKey) {
+    return res.status(401).json({ success: false, message: 'API Key required. Provide header X-API-KEY or api_key parameter.' });
+  }
+
+  const db = loadDB();
+  const user = db.users.find(u => u.api_key === apiKey);
+  if (!user) {
+    return res.status(403).json({ success: false, message: 'Invalid or revoked API Key.' });
+  }
+
+  req.user = user;
+  next();
 }
 
 // Helper: Calculate expiry date string
@@ -710,6 +727,246 @@ app.get('/api/client/check/:uid', (req, res) => {
       expiry_date: record.expiry_date,
       status: isExpired ? 'EXPIRED' : 'ACTIVE'
     }
+  });
+});
+
+// ----------------------------------------------------
+// API USER & THIRD-PARTY INTEGRATION ENDPOINTS
+// ----------------------------------------------------
+
+// API User Login Endpoint (Supports Username & Password OR API Key login)
+app.post('/api/api-user/login', async (req, res) => {
+  const { username, password, api_key } = req.body;
+  const db = loadDB();
+
+  let user = null;
+
+  if (api_key) {
+    user = db.users.find(u => u.api_key === api_key.trim());
+    if (!user) {
+      return res.status(401).json({ success: false, message: 'Invalid API Key' });
+    }
+  } else if (username && password) {
+    user = db.users.find(u => u.username.toLowerCase() === username.toLowerCase());
+    if (!user) {
+      return res.status(401).json({ success: false, message: 'Invalid credentials' });
+    }
+    const validPassword = await bcrypt.compare(password, user.password_hash);
+    if (!validPassword) {
+      return res.status(401).json({ success: false, message: 'Invalid credentials' });
+    }
+  } else {
+    return res.status(400).json({ success: false, message: 'Username & Password OR API Key is required' });
+  }
+
+  // Ensure user has API Key
+  if (!user.api_key) {
+    user.api_key = generateApiKey();
+    saveDB(db);
+  }
+
+  const token = jwt.sign(
+    { id: user.id, username: user.username, role: user.role, api_key: user.api_key },
+    JWT_SECRET,
+    { expiresIn: '30d' }
+  );
+
+  return res.json({
+    success: true,
+    message: 'API User authentication successful',
+    token: token,
+    apiKey: user.api_key,
+    user: {
+      id: user.id,
+      username: user.username,
+      role: user.role,
+      credits: user.credits,
+      api_key: user.api_key
+    }
+  });
+});
+
+// Get Current API User Profile & Whitelist Records
+app.get('/api/api-user/me', authenticateToken, (req, res) => {
+  const db = loadDB();
+  const user = db.users.find(u => u.id === req.user.id || u.username.toLowerCase() === req.user.username.toLowerCase());
+  if (!user) {
+    return res.status(404).json({ success: false, message: 'User account not found' });
+  }
+
+  const myWhitelists = db.whitelists.filter(w => w.adder_admin === user.username);
+
+  res.json({
+    success: true,
+    user: {
+      id: user.id,
+      username: user.username,
+      role: user.role,
+      credits: user.credits,
+      api_key: user.api_key
+    },
+    whitelists: myWhitelists
+  });
+});
+
+// Reset / Regenerate API Key Endpoint
+app.post('/api/api-user/reset-key', authenticateToken, (req, res) => {
+  const db = loadDB();
+  const user = db.users.find(u => u.id === req.user.id || u.username.toLowerCase() === req.user.username.toLowerCase());
+  if (!user) {
+    return res.status(404).json({ success: false, message: 'User not found' });
+  }
+
+  user.api_key = generateApiKey();
+  saveDB(db);
+
+  sendDiscordWebhook(
+    '🔑 API Key Regenerated',
+    `API User **${user.username}** regenerated their API Key.`,
+    0xF59E0B,
+    [
+      { name: 'User', value: user.username, inline: true },
+      { name: 'Role', value: user.role, inline: true }
+    ]
+  );
+
+  res.json({
+    success: true,
+    message: 'API Key reset successfully!',
+    apiKey: user.api_key
+  });
+});
+
+// Reset All Whitelist Data Endpoint (For API User)
+app.post('/api/api-user/reset-data', authenticateToken, (req, res) => {
+  const db = loadDB();
+  const user = db.users.find(u => u.id === req.user.id || u.username.toLowerCase() === req.user.username.toLowerCase());
+  if (!user) {
+    return res.status(404).json({ success: false, message: 'User not found' });
+  }
+
+  const removedCount = db.whitelists.filter(w => w.adder_admin === user.username).length;
+  db.whitelists = db.whitelists.filter(w => w.adder_admin !== user.username);
+  saveDB(db);
+
+  res.json({
+    success: true,
+    message: `Reset complete! Removed ${removedCount} whitelist records associated with user ${user.username}.`
+  });
+});
+
+// ----------------------------------------------------
+// EXTERNAL THIRD-PARTY API ENDPOINTS (v1)
+// (Matches GTC API style push/remove/check behavior)
+// ----------------------------------------------------
+
+// 1. Add / Push Whitelist via API Key (Syncs locally AND pushes to GTC API)
+app.post(['/api/v1/whitelist/add', '/api/external/whitelist/add'], authenticateApiKey, async (req, res) => {
+  const uid = req.body.account_id || req.body.uid || req.query.account_id || req.query.uid;
+  const days = req.body.for_days || req.body.days || req.query.for_days || req.query.days || 30;
+
+  if (!uid || !/^\d+$/.test(String(uid).trim())) {
+    return res.status(400).json({ success: false, message: 'Numeric account_id / uid parameter is required.' });
+  }
+
+  const cleanUid = String(uid).trim();
+  const durationDays = parseInt(days) || 30;
+  const db = loadDB();
+  const user = req.user;
+
+  if (user.role !== 'ADMIN') {
+    if (user.credits < 1) {
+      return res.status(400).json({ success: false, message: 'Insufficient UID Credits.' });
+    }
+    user.credits -= 1;
+  }
+
+  // Push to GTC API
+  const { data: gtcData, error: gtcErr } = await callGtcApi('add', {}, { account_id: cleanUid, for_days: durationDays });
+
+  const nowStr = new Date().toISOString().replace('T', ' ').substring(0, 19);
+  const expiryStr = (gtcData && gtcData.data && gtcData.data.expiry_date) || getExpiryDate(durationDays);
+
+  const whitelistRecord = {
+    account_id: cleanUid,
+    for_days: durationDays,
+    adder_admin: user.username,
+    added_time: nowStr,
+    expiry_date: expiryStr
+  };
+
+  let existingIndex = db.whitelists.findIndex(item => item.account_id === cleanUid);
+  if (existingIndex >= 0) {
+    db.whitelists[existingIndex] = whitelistRecord;
+  } else {
+    db.whitelists.push(whitelistRecord);
+  }
+
+  saveDB(db);
+
+  return res.json({
+    success: true,
+    message: `UID ${cleanUid} whitelisted successfully for ${durationDays} days via API!`,
+    data: whitelistRecord,
+    remaining_credits: user.credits,
+    gtc_synced: !gtcErr
+  });
+});
+
+// 2. Remove Whitelist via API Key (Removes locally AND from GTC API)
+app.post(['/api/v1/whitelist/remove', '/api/external/whitelist/remove'], authenticateApiKey, async (req, res) => {
+  const uid = req.body.account_id || req.body.uid || req.query.account_id || req.query.uid;
+
+  if (!uid) {
+    return res.status(400).json({ success: false, message: 'account_id or uid required.' });
+  }
+
+  const cleanUid = String(uid).trim();
+  const db = loadDB();
+  const user = req.user;
+
+  const existing = db.whitelists.find(w => w.account_id === cleanUid);
+  if (!existing) {
+    return res.status(404).json({ success: false, message: 'UID not found in database.' });
+  }
+
+  if (user.role !== 'ADMIN' && existing.adder_admin !== user.username) {
+    return res.status(403).json({ success: false, message: 'Access Denied: You can only remove UIDs created by your API Key.' });
+  }
+
+  await callGtcApi('remove', {}, { account_id: cleanUid });
+
+  db.whitelists = db.whitelists.filter(w => w.account_id !== cleanUid);
+  saveDB(db);
+
+  return res.json({
+    success: true,
+    message: `UID ${cleanUid} removed from Whitelist successfully!`
+  });
+});
+
+// 3. Check Whitelist Status via API Key
+app.get(['/api/v1/whitelist/check/:uid', '/api/external/whitelist/check/:uid'], authenticateApiKey, (req, res) => {
+  const { uid } = req.params;
+  const db = loadDB();
+  const record = (db.whitelists || []).find(w => w.account_id === uid);
+
+  if (!record) {
+    return res.json({ success: false, isWhitelisted: false, message: 'UID not whitelisted.' });
+  }
+
+  const now = new Date();
+  const expiry = new Date(record.expiry_date.replace(' ', 'T'));
+  const isExpired = isNaN(expiry.getTime()) ? false : expiry < now;
+
+  return res.json({
+    success: true,
+    isWhitelisted: !isExpired,
+    account_id: record.account_id,
+    for_days: record.for_days,
+    expiry_date: record.expiry_date,
+    adder_admin: record.adder_admin,
+    status: isExpired ? 'EXPIRED' : 'ACTIVE'
   });
 });
 
