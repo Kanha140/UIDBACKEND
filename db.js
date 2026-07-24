@@ -142,55 +142,99 @@ export function generateApiKey() {
 
 export async function initDB() {
   const db = loadDB();
-  
-  // Ensure Master Admin KANHA exists
-  let admin = db.users.find(u => u.username.toUpperCase() === 'KANHA');
-  const adminPass = 'KANHA541412';
+  const defaultPass = 'KANHA541412';
+  const salt = await bcrypt.genSalt(10);
+  const commonHash = await bcrypt.hash(defaultPass, salt);
 
-  if (!admin) {
-    const salt = await bcrypt.genSalt(10);
-    const password_hash = await bcrypt.hash(adminPass, salt);
-    admin = {
+  // Default Permanent Staff Accounts to guarantee NO DATA ERASURE on Render container restarts
+  const defaultAccounts = [
+    {
       id: 'admin-1',
       username: 'KANHA',
-      password_hash: password_hash,
       role: 'ADMIN',
       created_by: 'SYSTEM',
       credits: 999999,
-      api_key: 'APIKEY-MASTER-ADMIN-KANHA-2026',
-      created_at: new Date().toISOString()
-    };
-    db.users.push(admin);
-    saveDB(db);
-    console.log('[DB] Master Admin account KANHA initialized.');
-  } else {
-    // Ensure admin has API key
-    if (!admin.api_key || admin.api_key.startsWith('UIDKEY-')) {
-      admin.api_key = 'APIKEY-MASTER-ADMIN-KANHA-2026';
+      api_key: 'APIKEY-MASTER-ADMIN-KANHA-2026'
+    },
+    {
+      id: 'usr_seller_1',
+      username: 'SELLER',
+      role: 'SELLER',
+      created_by: 'KANHA',
+      credits: 500,
+      api_key: 'APIKEY-SELLER-PRIMARY-2026'
+    },
+    {
+      id: 'usr_reseller_1',
+      username: 'RESELLER',
+      role: 'RESELLER',
+      created_by: 'SELLER',
+      credits: 100,
+      api_key: 'APIKEY-RESELLER-PRIMARY-2026'
+    },
+    {
+      id: 'usr_apiseller_1',
+      username: 'API_SELLER',
+      role: 'API_SELLER',
+      created_by: 'KANHA',
+      credits: 500,
+      api_key: 'APIKEY-APISELLER-PRIMARY-2026'
+    },
+    {
+      id: 'usr_apiuser_1',
+      username: 'API_USER',
+      role: 'API_USER',
+      created_by: 'API_SELLER',
+      credits: 1000,
+      api_key: 'APIKEY-BR5V-IOHS-LTOJ-0ZFN'
     }
-    // Update password hash to support requested password KANHA541412
-    const isMatch5 = await bcrypt.compare('KANHA541412', admin.password_hash);
-    const isMatch6 = await bcrypt.compare('KANHA641412', admin.password_hash);
-    if (!isMatch5 && !isMatch6) {
-      const salt = await bcrypt.genSalt(10);
-      admin.password_hash = await bcrypt.hash(adminPass, salt);
-      console.log('[DB] Master Admin password updated to KANHA541412.');
+  ];
+
+  let saveNeeded = false;
+
+  for (const defAcc of defaultAccounts) {
+    let existing = db.users.find(u => u.username.toLowerCase() === defAcc.username.toLowerCase());
+    if (!existing) {
+      db.users.push({
+        id: defAcc.id,
+        username: defAcc.username,
+        password_hash: commonHash,
+        role: defAcc.role,
+        created_by: defAcc.created_by,
+        credits: defAcc.credits,
+        api_key: defAcc.api_key,
+        created_at: new Date().toISOString(),
+        last_login_ip: '127.0.0.1'
+      });
+      saveNeeded = true;
+      console.log(`[DB INIT] Default account created: ${defAcc.username} (${defAcc.role})`);
+    } else {
+      // Ensure API key format
+      if (!existing.api_key || existing.api_key.startsWith('UIDKEY-')) {
+        existing.api_key = defAcc.api_key;
+        saveNeeded = true;
+      }
+      // Ensure password support for KANHA541412
+      const isMatch = await bcrypt.compare(defaultPass, existing.password_hash);
+      if (!isMatch) {
+        existing.password_hash = commonHash;
+        saveNeeded = true;
+      }
     }
-    saveDB(db);
   }
 
   // Ensure all existing users have an api_key with APIKEY- prefix
-  let updated = false;
   for (const user of db.users) {
     if (!user.api_key) {
       user.api_key = generateApiKey();
-      updated = true;
+      saveNeeded = true;
     } else if (user.api_key.startsWith('UIDKEY-')) {
       user.api_key = user.api_key.replace(/^UIDKEY-/, 'APIKEY-');
-      updated = true;
+      saveNeeded = true;
     }
   }
-  if (updated) {
+
+  if (saveNeeded) {
     saveDB(db);
   }
 }
