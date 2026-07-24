@@ -2,11 +2,11 @@ import fs from 'fs';
 import path from 'path';
 import bcrypt from 'bcryptjs';
 import { fileURLToPath } from 'url';
+import { PERMANENT_STORE } from './storage.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Allow persistent disk storage directory via env var DATA_DIR (e.g. Render persistent disk /var/data)
 const DATA_DIR = process.env.DATA_DIR || __dirname;
 
 if (!fs.existsSync(DATA_DIR)) {
@@ -16,51 +16,66 @@ if (!fs.existsSync(DATA_DIR)) {
 const DB_FILE = path.join(DATA_DIR, 'database.json');
 const BACKUP_FILE = path.join(DATA_DIR, 'database_backup.json');
 
-const initialData = {
-  users: [],
-  whitelists: [],
-  login_history: []
-};
+// In-Memory Database Cache in JS (Persists across function calls during uptime)
+let memoryDB = null;
 
 export function loadDB() {
-  if (!fs.existsSync(DB_FILE)) {
-    // Check if backup exists
-    if (fs.existsSync(BACKUP_FILE)) {
-      try {
-        const backupData = fs.readFileSync(BACKUP_FILE, 'utf8');
-        saveDB(JSON.parse(backupData));
-        console.log('[DB] Restored database from backup file.');
-        return JSON.parse(backupData);
-      } catch (e) {
-        console.error('Failed to restore backup:', e);
-      }
-    }
-    saveDB(initialData);
+  if (memoryDB) {
+    return memoryDB;
   }
-  try {
-    const data = fs.readFileSync(DB_FILE, 'utf8');
-    return JSON.parse(data);
-  } catch (err) {
-    console.error('Error reading DB, restoring from backup if available:', err);
-    if (fs.existsSync(BACKUP_FILE)) {
-      try {
-        const backupData = fs.readFileSync(BACKUP_FILE, 'utf8');
-        return JSON.parse(backupData);
-      } catch (e) {}
+
+  let fileData = null;
+
+  // Try reading main DB file
+  if (fs.existsSync(DB_FILE)) {
+    try {
+      const raw = fs.readFileSync(DB_FILE, 'utf8');
+      fileData = JSON.parse(raw);
+    } catch (e) {
+      console.error('[DB LOAD ERROR] Main file error:', e.message);
     }
-    saveDB(initialData);
-    return initialData;
   }
+
+  // Try backup file if main file failed
+  if (!fileData && fs.existsSync(BACKUP_FILE)) {
+    try {
+      const rawBackup = fs.readFileSync(BACKUP_FILE, 'utf8');
+      fileData = JSON.parse(rawBackup);
+    } catch (e) {
+      console.error('[DB BACKUP LOAD ERROR] Backup file error:', e.message);
+    }
+  }
+
+  // If no file data exists, fallback to PERMANENT_STORE JS module
+  if (!fileData) {
+    fileData = JSON.parse(JSON.stringify(PERMANENT_STORE));
+  }
+
+  // Ensure arrays exist
+  if (!fileData.users) fileData.users = [];
+  if (!fileData.whitelists) fileData.whitelists = [];
+  if (!fileData.login_history) fileData.login_history = [];
+
+  // Merge permanent seeded users from storage.js if missing
+  for (const pUser of PERMANENT_STORE.users) {
+    if (!fileData.users.some(u => u.username.toLowerCase() === pUser.username.toLowerCase())) {
+      fileData.users.push(pUser);
+    }
+  }
+
+  memoryDB = fileData;
+  saveDB(memoryDB);
+  return memoryDB;
 }
 
 export function saveDB(data) {
+  memoryDB = data;
   try {
     const jsonStr = JSON.stringify(data, null, 2);
     fs.writeFileSync(DB_FILE, jsonStr, 'utf8');
-    // Save backup copy simultaneously to prevent data corruption/loss
     fs.writeFileSync(BACKUP_FILE, jsonStr, 'utf8');
   } catch (err) {
-    console.error('Error saving DB:', err);
+    console.error('[DB SAVE WARNING] Could not write to disk, data kept in memory:', err.message);
   }
 }
 
