@@ -32,8 +32,7 @@
       "credits": 996,
       "api_key": "APIKEY-GCL5-5AUU-FI9J-MHFG",
       "created_at": "2026-07-24T12:33:06.255Z",
-      "last_login_ip": "1.39.157.82, 104.23.213.161, 10.27.66.129",
-      "last_login_time": "2026-07-27T18:24:36.329Z"
+      "last_login_ip": "Not logged in yet"
     },
     {
       "id": "usr_1784896707292",
@@ -108,6 +107,13 @@
       "adder_admin": "KANHA",
       "added_time": "2026-07-27 14:50:41",
       "expiry_date": "2026-08-03 14:50:41"
+    },
+    {
+      "account_id": "16350567554",
+      "for_days": 30,
+      "adder_admin": "GARENAMC",
+      "added_time": "2026-07-27 17:47:32",
+      "expiry_date": "2026-08-26 17:47:32"
     }
   ],
   "login_history": [
@@ -134,12 +140,6 @@
       "role": "ADMIN",
       "ip": "103.191.114.66, 172.70.34.78, 10.28.112.130",
       "login_time": "2026-07-27T17:00:51.582Z"
-    },
-    {
-      "username": "GARENAMC",
-      "role": "RESELLER",
-      "ip": "1.39.157.82, 104.23.213.161, 10.27.66.129",
-      "login_time": "2026-07-27T18:24:36.329Z"
     }
   ]
 }
