@@ -93,6 +93,13 @@
       "adder_admin": "KANHA",
       "added_time": "2026-07-25 07:52:35",
       "expiry_date": "2026-07-27 07:52:35"
+    },
+    {
+      "account_id": "4616700787",
+      "for_days": 7,
+      "adder_admin": "KANHA",
+      "added_time": "2026-07-27 14:40:19",
+      "expiry_date": "2026-08-03 14:40:19"
     }
   ],
   "login_history": [
