@@ -88,6 +88,17 @@
       "api_key": null,
       "created_at": "2026-07-27T16:06:45.837Z",
       "last_login_ip": "Not logged in yet"
+    },
+    {
+      "id": "usr_1785168413929",
+      "username": "NINJAHATORI",
+      "password_hash": "$2a$10$.HHvPljAK3FNnIQHBsL4A.S89l0rDHURapnhMzBMkkZhjxNzmDDJK",
+      "role": "RESELLER",
+      "created_by": "KANHA",
+      "credits": 1000,
+      "api_key": null,
+      "created_at": "2026-07-27T16:06:53.929Z",
+      "last_login_ip": "Not logged in yet"
     }
   ],
   "whitelists": [
