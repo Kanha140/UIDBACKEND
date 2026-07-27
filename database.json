@@ -9,8 +9,8 @@
       "credits": 999999,
       "api_key": "APIKEY-MASTER-ADMIN-KANHA-2026",
       "created_at": "2026-07-20T10:00:00.000Z",
-      "last_login_ip": "223.185.60.248, 172.69.94.203, 10.26.62.130",
-      "last_login_time": "2026-07-24T12:37:13.204Z"
+      "last_login_ip": "103.191.114.91, 172.71.198.151, 10.28.112.130",
+      "last_login_time": "2026-07-27T16:06:32.491Z"
     },
     {
       "id": "usr_reseller_1",
@@ -77,28 +77,6 @@
       "api_key": "APIKEY-BR5V-IOHS-LTOJ-0ZFN",
       "created_at": "2026-07-24T12:38:51.909Z",
       "last_login_ip": "127.0.0.1"
-    },
-    {
-      "id": "usr_1785168405837",
-      "username": "VILLAN",
-      "password_hash": "$2a$10$zEntPcRjVRTPeJwjXmAQPeQVYQ420DJs35Ufwh2uH.Qf3KPyPfIi6",
-      "role": "RESELLER",
-      "created_by": "KANHA",
-      "credits": 1000,
-      "api_key": null,
-      "created_at": "2026-07-27T16:06:45.837Z",
-      "last_login_ip": "Not logged in yet"
-    },
-    {
-      "id": "usr_1785168413929",
-      "username": "NINJAHATORI",
-      "password_hash": "$2a$10$.HHvPljAK3FNnIQHBsL4A.S89l0rDHURapnhMzBMkkZhjxNzmDDJK",
-      "role": "RESELLER",
-      "created_by": "KANHA",
-      "credits": 1000,
-      "api_key": null,
-      "created_at": "2026-07-27T16:06:53.929Z",
-      "last_login_ip": "Not logged in yet"
     }
   ],
   "whitelists": [
@@ -143,6 +121,12 @@
       "role": "ADMIN",
       "ip": "223.185.60.248, 172.70.34.78, 10.26.62.130",
       "login_time": "2026-07-24T12:32:53.954Z"
+    },
+    {
+      "username": "KANHA",
+      "role": "ADMIN",
+      "ip": "103.191.114.91, 172.71.198.151, 10.28.112.130",
+      "login_time": "2026-07-27T16:06:32.491Z"
     }
   ]
 }
