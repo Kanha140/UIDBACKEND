@@ -29,11 +29,11 @@
       "password_hash": "$2a$10$uS7VaCiSSUxjfCK1FQC4CurRTJiPpwymdX5JrGVEDFSDmzudMXKru",
       "role": "RESELLER",
       "created_by": "KANHA",
-      "credits": 993,
+      "credits": 994,
       "api_key": "APIKEY-GCL5-5AUU-FI9J-MHFG",
       "created_at": "2026-07-24T12:33:06.255Z",
-      "last_login_ip": "122.183.57.76, 172.70.111.152, 10.26.114.132",
-      "last_login_time": "2026-07-30T06:34:09.325Z"
+      "last_login_ip": "104.28.158.152, 172.70.34.78, 10.28.112.130",
+      "last_login_time": "2026-07-27T18:30:15.779Z"
     },
     {
       "id": "usr_1784896707292",
@@ -115,13 +115,6 @@
       "adder_admin": "GARENAMC",
       "added_time": "2026-07-27 18:30:28",
       "expiry_date": "2026-08-11 18:30:28"
-    },
-    {
-      "account_id": "2090192418",
-      "for_days": 365,
-      "adder_admin": "GARENAMC",
-      "added_time": "2026-07-30 06:34:26",
-      "expiry_date": "2027-07-30 06:34:26"
     }
   ],
   "login_history": [
@@ -160,12 +153,6 @@
       "role": "RESELLER",
       "ip": "104.28.158.152, 172.70.34.78, 10.28.112.130",
       "login_time": "2026-07-27T18:30:15.779Z"
-    },
-    {
-      "username": "GARENAMC",
-      "role": "RESELLER",
-      "ip": "122.183.57.76, 172.70.111.152, 10.26.114.132",
-      "login_time": "2026-07-30T06:34:09.325Z"
     }
   ]
 }
