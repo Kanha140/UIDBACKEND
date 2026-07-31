@@ -29,7 +29,7 @@
       "password_hash": "$2a$10$uS7VaCiSSUxjfCK1FQC4CurRTJiPpwymdX5JrGVEDFSDmzudMXKru",
       "role": "RESELLER",
       "created_by": "KANHA",
-      "credits": 993,
+      "credits": 992,
       "api_key": "APIKEY-GCL5-5AUU-FI9J-MHFG",
       "created_at": "2026-07-24T12:33:06.255Z",
       "last_login_ip": "122.183.57.23, 172.68.127.212, 10.30.20.131",
@@ -122,6 +122,13 @@
       "adder_admin": "GARENAMC",
       "added_time": "2026-07-31 13:06:01",
       "expiry_date": "2026-08-30 13:06:01"
+    },
+    {
+      "account_id": "12704449045",
+      "for_days": 30,
+      "adder_admin": "GARENAMC",
+      "added_time": "2026-07-31 13:17:46",
+      "expiry_date": "2026-08-30 13:17:46"
     }
   ],
   "login_history": [
