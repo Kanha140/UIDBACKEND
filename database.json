@@ -82,13 +82,6 @@
   ],
   "whitelists": [
     {
-      "account_id": "15855920849",
-      "for_days": 30,
-      "adder_admin": "KANHA",
-      "added_time": "2026-07-20 12:00:00",
-      "expiry_date": "2026-08-20 12:00:00"
-    },
-    {
       "account_id": "13764157641",
       "for_days": 2,
       "adder_admin": "KANHA",
