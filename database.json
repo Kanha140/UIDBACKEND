@@ -9,8 +9,8 @@
       "credits": 999999,
       "api_key": "APIKEY-MASTER-ADMIN-KANHA-2026",
       "created_at": "2026-07-20T10:00:00.000Z",
-      "last_login_ip": "49.36.241.42, 172.69.86.30, 10.30.45.132",
-      "last_login_time": "2026-08-29T09:35:23.428Z"
+      "last_login_ip": "103.191.114.66, 172.70.34.78, 10.28.112.130",
+      "last_login_time": "2026-07-27T17:00:51.582Z"
     },
     {
       "id": "usr_reseller_1",
@@ -55,8 +55,7 @@
       "credits": 500,
       "api_key": "APIKEY-55AW-G2OP-J1N7-Q7KS",
       "created_at": "2026-07-24T12:38:51.318Z",
-      "last_login_ip": "43.134.163.219, 172.71.190.253, 10.30.45.132",
-      "last_login_time": "2026-08-29T08:11:53.726Z"
+      "last_login_ip": "127.0.0.1"
     },
     {
       "id": "usr_apiseller_1",
@@ -64,11 +63,10 @@
       "password_hash": "$2a$10$kGeSVwPXTJKK0S71HIfLWexyiOtR2HB8IQncrRCzJq0P6dG24kIpC",
       "role": "API_SELLER",
       "created_by": "KANHA",
-      "credits": 499,
+      "credits": 500,
       "api_key": "APIKEY-APISELLER-PRIMARY-2026",
       "created_at": "2026-07-24T12:38:51.909Z",
-      "last_login_ip": "43.134.2.139, 104.23.209.133, 10.27.51.132",
-      "last_login_time": "2026-08-29T08:11:54.434Z"
+      "last_login_ip": "127.0.0.1"
     },
     {
       "id": "usr_apiuser_1",
@@ -76,11 +74,10 @@
       "password_hash": "$2a$10$kGeSVwPXTJKK0S71HIfLWexyiOtR2HB8IQncrRCzJq0P6dG24kIpC",
       "role": "API_USER",
       "created_by": "API_SELLER",
-      "credits": 999,
+      "credits": 1000,
       "api_key": "APIKEY-BR5V-IOHS-LTOJ-0ZFN",
       "created_at": "2026-07-24T12:38:51.909Z",
-      "last_login_ip": "43.134.2.139, 172.70.142.116, 10.30.45.132",
-      "last_login_time": "2026-08-29T08:11:55.625Z"
+      "last_login_ip": "127.0.0.1"
     }
   ],
   "whitelists": [
@@ -125,69 +122,6 @@
       "adder_admin": "GARENAMC",
       "added_time": "2026-08-02 07:59:18",
       "expiry_date": "2026-09-01 07:59:18"
-    },
-    {
-      "account_id": "9876543211",
-      "for_days": 30,
-      "adder_admin": "KANHA",
-      "added_time": "2026-08-29 08:00:07",
-      "expiry_date": "2026-09-28 08:00:07"
-    },
-    {
-      "account_id": "9876543217",
-      "for_days": 30,
-      "adder_admin": "KANHA",
-      "added_time": "2026-08-29 08:00:09",
-      "expiry_date": "2026-09-28 08:00:09"
-    },
-    {
-      "account_id": "98765432115",
-      "for_days": 30,
-      "adder_admin": "KANHA",
-      "added_time": "2026-08-29 08:00:10",
-      "expiry_date": "2026-09-28 08:00:10"
-    },
-    {
-      "account_id": "98765432130",
-      "for_days": 30,
-      "adder_admin": "KANHA",
-      "added_time": "2026-08-29 08:00:11",
-      "expiry_date": "2026-09-28 08:00:11"
-    },
-    {
-      "account_id": "987654321365",
-      "for_days": 30,
-      "adder_admin": "KANHA",
-      "added_time": "2026-08-29 08:00:11",
-      "expiry_date": "2026-09-28 08:00:11"
-    },
-    {
-      "account_id": "5555555555",
-      "for_days": 30,
-      "adder_admin": "KANHA",
-      "added_time": "2026-08-29 08:00:14",
-      "expiry_date": "2026-09-28 08:00:14"
-    },
-    {
-      "account_id": "8888888888",
-      "for_days": 30,
-      "adder_admin": "KANHA",
-      "added_time": "2026-08-29 08:00:22",
-      "expiry_date": "2026-09-28 08:00:22"
-    },
-    {
-      "account_id": "16081361611",
-      "for_days": 30,
-      "adder_admin": "KANHA",
-      "added_time": "2026-08-29 09:22:24",
-      "expiry_date": "2026-09-28 09:22:24"
-    },
-    {
-      "account_id": "9999999999",
-      "for_days": 30,
-      "adder_admin": "KANHA",
-      "added_time": "2026-08-29 08:09:31",
-      "expiry_date": "2026-09-28 08:09:31"
     }
   ],
   "login_history": [
@@ -232,108 +166,6 @@
       "role": "RESELLER",
       "ip": "106.215.142.253, 162.158.154.161, 10.31.138.132",
       "login_time": "2026-08-02T07:59:11.103Z"
-    },
-    {
-      "username": "KANHA",
-      "role": "ADMIN",
-      "ip": "43.134.2.139, 104.22.66.28, 10.30.45.132",
-      "login_time": "2026-08-29T08:11:33.626Z"
-    },
-    {
-      "username": "SELLER",
-      "role": "SELLER",
-      "ip": "43.134.163.219, 172.71.190.253, 10.30.45.132",
-      "login_time": "2026-08-29T08:11:53.726Z"
-    },
-    {
-      "username": "API_SELLER",
-      "role": "API_SELLER",
-      "ip": "43.134.2.139, 104.23.209.133, 10.27.51.132",
-      "login_time": "2026-08-29T08:11:54.434Z"
-    },
-    {
-      "username": "API_USER",
-      "role": "API_USER",
-      "ip": "43.134.2.139, 172.70.142.116, 10.30.45.132",
-      "login_time": "2026-08-29T08:11:55.625Z"
-    },
-    {
-      "username": "KANHA",
-      "role": "ADMIN",
-      "ip": "43.134.2.139, 172.71.190.253, 10.30.38.3",
-      "login_time": "2026-08-29T08:27:28.331Z"
-    },
-    {
-      "username": "KANHA",
-      "role": "ADMIN",
-      "ip": "43.134.2.139, 172.70.142.116, 10.30.38.3",
-      "login_time": "2026-08-29T08:27:28.937Z"
-    },
-    {
-      "username": "KANHA",
-      "role": "ADMIN",
-      "ip": "43.134.2.139, 172.71.190.253, 10.30.38.3",
-      "login_time": "2026-08-29T08:27:29.730Z"
-    },
-    {
-      "username": "KANHA",
-      "role": "ADMIN",
-      "ip": "49.36.241.42, 104.23.211.202, 10.27.51.132",
-      "login_time": "2026-08-29T09:04:44.926Z"
-    },
-    {
-      "username": "KANHA",
-      "role": "ADMIN",
-      "ip": "49.36.241.42, 104.23.209.133, 10.30.38.3",
-      "login_time": "2026-08-29T09:04:45.141Z"
-    },
-    {
-      "username": "KANHA",
-      "role": "ADMIN",
-      "ip": "49.36.241.42, 172.71.202.162, 10.27.51.132",
-      "login_time": "2026-08-29T09:05:09.028Z"
-    },
-    {
-      "username": "KANHA",
-      "role": "ADMIN",
-      "ip": "49.36.241.42, 172.69.94.202, 10.30.45.132",
-      "login_time": "2026-08-29T09:05:09.427Z"
-    },
-    {
-      "username": "KANHA",
-      "role": "ADMIN",
-      "ip": "49.36.241.42, 172.69.178.120, 10.30.38.3",
-      "login_time": "2026-08-29T09:10:12.932Z"
-    },
-    {
-      "username": "KANHA",
-      "role": "ADMIN",
-      "ip": "49.36.241.42, 172.69.94.202, 10.27.51.132",
-      "login_time": "2026-08-29T09:15:15.228Z"
-    },
-    {
-      "username": "KANHA",
-      "role": "ADMIN",
-      "ip": "49.36.241.42, 162.159.99.80, 10.30.45.132",
-      "login_time": "2026-08-29T09:20:16.727Z"
-    },
-    {
-      "username": "KANHA",
-      "role": "ADMIN",
-      "ip": "49.36.241.42, 172.69.94.202, 10.30.45.132",
-      "login_time": "2026-08-29T09:25:18.532Z"
-    },
-    {
-      "username": "KANHA",
-      "role": "ADMIN",
-      "ip": "49.36.241.42, 172.69.94.202, 10.30.38.3",
-      "login_time": "2026-08-29T09:30:20.626Z"
-    },
-    {
-      "username": "KANHA",
-      "role": "ADMIN",
-      "ip": "49.36.241.42, 172.69.86.30, 10.30.45.132",
-      "login_time": "2026-08-29T09:35:23.428Z"
     }
   ]
 }
