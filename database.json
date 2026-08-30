@@ -122,6 +122,13 @@
       "adder_admin": "GARENAMC",
       "added_time": "2026-08-02 07:59:18",
       "expiry_date": "2026-09-01 07:59:18"
+    },
+    {
+      "account_id": "1234567890",
+      "for_days": 30,
+      "adder_admin": "KANHA",
+      "added_time": "2026-08-30 22:20:48",
+      "expiry_date": "2026-09-29 22:20:48"
     }
   ],
   "login_history": [
