@@ -9,8 +9,8 @@
       "credits": 999999,
       "api_key": "APIKEY-MASTER-ADMIN-KANHA-2026",
       "created_at": "2026-07-20T10:00:00.000Z",
-      "last_login_ip": "49.36.241.14, 104.23.209.161, 10.27.51.132",
-      "last_login_time": "2026-08-30T22:48:33.346Z"
+      "last_login_ip": "103.191.114.66, 172.70.34.78, 10.28.112.130",
+      "last_login_time": "2026-07-27T17:00:51.582Z"
     },
     {
       "id": "usr_reseller_1",
@@ -21,8 +21,7 @@
       "credits": 100,
       "api_key": "APIKEY-RESELLER-PRIMARY-2026",
       "created_at": "2026-07-20T10:00:00.000Z",
-      "last_login_ip": "49.36.241.14, 172.70.219.159, 10.30.38.3",
-      "last_login_time": "2026-08-30T22:48:36.849Z"
+      "last_login_ip": "127.0.0.1"
     },
     {
       "id": "usr_1784896386255",
@@ -56,8 +55,7 @@
       "credits": 500,
       "api_key": "APIKEY-55AW-G2OP-J1N7-Q7KS",
       "created_at": "2026-07-24T12:38:51.318Z",
-      "last_login_ip": "49.36.241.14, 172.69.86.30, 10.27.51.132",
-      "last_login_time": "2026-08-30T22:48:35.346Z"
+      "last_login_ip": "127.0.0.1"
     },
     {
       "id": "usr_apiseller_1",
@@ -65,11 +63,10 @@
       "password_hash": "$2a$10$kGeSVwPXTJKK0S71HIfLWexyiOtR2HB8IQncrRCzJq0P6dG24kIpC",
       "role": "API_SELLER",
       "created_by": "KANHA",
-      "credits": 498,
+      "credits": 500,
       "api_key": "APIKEY-APISELLER-PRIMARY-2026",
       "created_at": "2026-07-24T12:38:51.909Z",
-      "last_login_ip": "49.36.241.14, 104.23.209.161, 10.27.51.132",
-      "last_login_time": "2026-08-30T22:48:37.948Z"
+      "last_login_ip": "127.0.0.1"
     },
     {
       "id": "usr_apiuser_1",
@@ -80,8 +77,7 @@
       "credits": 1000,
       "api_key": "APIKEY-BR5V-IOHS-LTOJ-0ZFN",
       "created_at": "2026-07-24T12:38:51.909Z",
-      "last_login_ip": "49.36.241.14, 172.71.198.150, 10.27.51.132",
-      "last_login_time": "2026-08-30T22:48:40.547Z"
+      "last_login_ip": "127.0.0.1"
     }
   ],
   "whitelists": [
@@ -126,53 +122,9 @@
       "adder_admin": "GARENAMC",
       "added_time": "2026-08-02 07:59:18",
       "expiry_date": "2026-09-01 07:59:18"
-    },
-    {
-      "account_id": "1234567890",
-      "for_days": 30,
-      "adder_admin": "KANHA",
-      "added_time": "2026-08-30 22:20:48",
-      "expiry_date": "2026-09-29 22:20:48"
-    },
-    {
-      "account_id": "16081361611",
-      "for_days": 30,
-      "adder_admin": "API_SELLER",
-      "added_time": "2026-08-30 23:00:39",
-      "expiry_date": "2026-09-29 23:00:39"
     }
   ],
   "login_history": [
-    {
-      "username": "GARENAMC",
-      "role": "RESELLER",
-      "ip": "106.215.142.253, 162.158.154.161, 10.31.138.132",
-      "login_time": "2026-08-02T07:59:11.103Z"
-    },
-    {
-      "username": "GARENAMC",
-      "role": "RESELLER",
-      "ip": "104.28.158.152, 172.70.34.78, 10.28.112.130",
-      "login_time": "2026-07-27T18:30:15.779Z"
-    },
-    {
-      "username": "GARENAMC",
-      "role": "RESELLER",
-      "ip": "1.39.157.82, 104.23.213.161, 10.27.66.129",
-      "login_time": "2026-07-27T18:24:36.329Z"
-    },
-    {
-      "username": "KANHA",
-      "role": "ADMIN",
-      "ip": "103.191.114.66, 172.70.34.78, 10.28.112.130",
-      "login_time": "2026-07-27T17:00:51.582Z"
-    },
-    {
-      "username": "KANHA",
-      "role": "ADMIN",
-      "ip": "103.191.114.91, 172.71.198.151, 10.28.112.130",
-      "login_time": "2026-07-27T16:06:32.491Z"
-    },
     {
       "username": "KANHA",
       "role": "ADMIN",
@@ -188,32 +140,32 @@
     {
       "username": "KANHA",
       "role": "ADMIN",
-      "ip": "49.36.241.14, 104.23.209.161, 10.27.51.132",
-      "login_time": "2026-08-30T22:48:33.346Z"
+      "ip": "103.191.114.91, 172.71.198.151, 10.28.112.130",
+      "login_time": "2026-07-27T16:06:32.491Z"
     },
     {
-      "username": "SELLER",
-      "role": "SELLER",
-      "ip": "49.36.241.14, 172.69.86.30, 10.27.51.132",
-      "login_time": "2026-08-30T22:48:35.346Z"
+      "username": "KANHA",
+      "role": "ADMIN",
+      "ip": "103.191.114.66, 172.70.34.78, 10.28.112.130",
+      "login_time": "2026-07-27T17:00:51.582Z"
     },
     {
-      "username": "RESELLER",
+      "username": "GARENAMC",
       "role": "RESELLER",
-      "ip": "49.36.241.14, 172.70.219.159, 10.30.38.3",
-      "login_time": "2026-08-30T22:48:36.849Z"
+      "ip": "1.39.157.82, 104.23.213.161, 10.27.66.129",
+      "login_time": "2026-07-27T18:24:36.329Z"
     },
     {
-      "username": "API_SELLER",
-      "role": "API_SELLER",
-      "ip": "49.36.241.14, 104.23.209.161, 10.27.51.132",
-      "login_time": "2026-08-30T22:48:37.948Z"
+      "username": "GARENAMC",
+      "role": "RESELLER",
+      "ip": "104.28.158.152, 172.70.34.78, 10.28.112.130",
+      "login_time": "2026-07-27T18:30:15.779Z"
     },
     {
-      "username": "API_USER",
-      "role": "API_USER",
-      "ip": "49.36.241.14, 172.71.198.150, 10.27.51.132",
-      "login_time": "2026-08-30T22:48:40.547Z"
+      "username": "GARENAMC",
+      "role": "RESELLER",
+      "ip": "106.215.142.253, 162.158.154.161, 10.31.138.132",
+      "login_time": "2026-08-02T07:59:11.103Z"
     }
   ]
 }
