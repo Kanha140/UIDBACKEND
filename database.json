@@ -133,13 +133,6 @@
       "adder_admin": "KANHA",
       "added_time": "2026-08-30 22:20:48",
       "expiry_date": "2026-09-29 22:20:48"
-    },
-    {
-      "account_id": "9999999999",
-      "for_days": 30,
-      "adder_admin": "KANHA",
-      "added_time": "2026-08-30 22:26:49",
-      "expiry_date": "2026-09-29 22:26:49"
     }
   ],
   "login_history": [
