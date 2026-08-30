@@ -65,7 +65,7 @@
       "password_hash": "$2a$10$kGeSVwPXTJKK0S71HIfLWexyiOtR2HB8IQncrRCzJq0P6dG24kIpC",
       "role": "API_SELLER",
       "created_by": "KANHA",
-      "credits": 499,
+      "credits": 498,
       "api_key": "APIKEY-APISELLER-PRIMARY-2026",
       "created_at": "2026-07-24T12:38:51.909Z",
       "last_login_ip": "49.36.241.14, 104.23.209.161, 10.27.51.132",
@@ -133,6 +133,13 @@
       "adder_admin": "KANHA",
       "added_time": "2026-08-30 22:20:48",
       "expiry_date": "2026-09-29 22:20:48"
+    },
+    {
+      "account_id": "16081361611",
+      "for_days": 30,
+      "adder_admin": "API_SELLER",
+      "added_time": "2026-08-30 23:00:39",
+      "expiry_date": "2026-09-29 23:00:39"
     }
   ],
   "login_history": [
